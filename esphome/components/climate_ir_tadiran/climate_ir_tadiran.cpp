@@ -122,8 +122,11 @@ bool TadIrClimate::on_receive(remote_base::RemoteReceiveData data) {
   uint8_t bitCount = 0;
   uint32_t packet = 0ULL;
 
-  if (!data.expect_item(HEADER_HIGH, HEADER_LOW))
-    return false;
+ESP_LOGD(TAG, "Recieving code");  
+if (!data.expect_item(HEADER_HIGH, HEADER_LOW)) {
+ ESP_LOGD(TAG, "Bad header"); 
+  return false;
+}
 
   for (bitCount = 0; bitCount < 32; bitCount++) {
     if (data.expect_item(ONE_HIGH, ONE_LOW)) {
