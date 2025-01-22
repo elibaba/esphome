@@ -1,5 +1,7 @@
 #include "climate_ir_tadiran.h"
 #include "esphome/core/log.h"
+#include <iostream>
+#include <sstream>
 
 namespace esphome {
 namespace climate_ir_tadiran {
@@ -62,6 +64,17 @@ climate::ClimateTraits TadIrClimate::traits() {
   return traits;
 }
 
+std::string vector_to_string(const std::vector<int>& vec) {
+  std::stringstream ss;
+  for (size_t i = 0; i < vec.size(); ++i) {
+    ss << vec[i];
+    if (i < vec.size() - 1) { 
+      ss << ","; 
+    }
+  }
+  return ss.str();
+}
+
 void TadIrClimate::packetFromClimateState(uint64_t &packet) {
   packet = 0ULL;
   // ccc = 100 periodic, 010 command
@@ -122,7 +135,9 @@ bool TadIrClimate::on_receive(remote_base::RemoteReceiveData data) {
   uint8_t bitCount = 0;
   uint32_t packet = 0ULL;
 
-ESP_LOGD(TAG, "Recieving code");  
+ESP_LOGD(TAG, "Recieving code from AC side");
+std::string str = vector_to_string(data);
+ESP_LOGD("MyTag", "Vector values: %s", str.c_str()); 
 if (!data.expect_item(HEADER_HIGH, HEADER_LOW)) {
  ESP_LOGD(TAG, "Bad header"); 
   return false;
