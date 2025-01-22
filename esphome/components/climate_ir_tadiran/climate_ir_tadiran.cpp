@@ -136,7 +136,7 @@ bool TadIrClimate::on_receive(remote_base::RemoteReceiveData data) {
   uint32_t packet = 0ULL;
 
 ESP_LOGD(TAG, "Recieving code from AC side");
-std::string str = vector_to_string(data);
+std::string str = vector_to_string(data.get_raw_data());
 ESP_LOGD("MyTag", "Vector values: %s", str.c_str()); 
 if (!data.expect_item(HEADER_HIGH, HEADER_LOW)) {
  ESP_LOGD(TAG, "Bad header"); 
