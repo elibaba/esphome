@@ -137,7 +137,7 @@ bool TadIrClimate::on_receive(remote_base::RemoteReceiveData data) {
 
 ESP_LOGD(TAG, "Recieving code from AC side");
 std::string str = vector_to_string(data.get_raw_data());
-ESP_LOGD("MyTag", "Vector values: %s", str.c_str()); 
+ESP_LOGD("OnRecieve", "Vector values: %s", str.c_str()); 
 if (!data.expect_item(HEADER_HIGH, HEADER_LOW)) {
  ESP_LOGD(TAG, "Bad header"); 
   return false;
@@ -154,7 +154,8 @@ if (!data.expect_item(HEADER_HIGH, HEADER_LOW)) {
       return false;
     }
   }
-
+ 
+ ESP_LOGD(TAG, "Publishing state to frontend"); 
   this->climateStateFromPacket(packet);
   this->publish_state();
   return true;
@@ -185,10 +186,12 @@ void TadIrClimate::climateStateFromPacket(const uint32_t &data) {
     switch (packet & rx::MODE_MASK) {
       case rx::MODE_HEAT:
         this->mode = climate::CLIMATE_MODE_HEAT;
+        ESP_LOGD(TAG, "Mode: Heat"); 
         break;
       case rx::MODE_COOL:
       default:
         this->mode = climate::CLIMATE_MODE_COOL;
+        ESP_LOGD(TAG, "Mode: Cool"); 
         break;
     }
   } else {
@@ -198,16 +201,20 @@ void TadIrClimate::climateStateFromPacket(const uint32_t &data) {
   switch (packet & rx::FAN_MASK) {
     case rx::FAN_AUTO:
       this->fan_mode = climate::CLIMATE_FAN_AUTO;
+      ESP_LOGD(TAG, "Fan: Auto"); 
       break;
     case rx::FAN_HIGH:
       this->fan_mode = climate::CLIMATE_FAN_HIGH;
+      ESP_LOGD(TAG, "Fan: High"); 
       break;
     case rx::FAN_MED:
       this->fan_mode = climate::CLIMATE_FAN_MEDIUM;
+      ESP_LOGD(TAG, "Fan: Medium"); 
       break;
     case rx::FAN_LOW:
     default:
       this->fan_mode = climate::CLIMATE_FAN_LOW;
+      ESP_LOGD(TAG, "Fan: Low"); 
       break;
   }
 }
